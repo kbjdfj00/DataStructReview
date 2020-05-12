@@ -1,0 +1,149 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <utility>
+#include <algorithm>
+#include <queue>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <numeric>
+using namespace std;
+
+
+void swap(int &a, int &b) {
+	int temp = a;
+	a = b;
+	b = temp;
+}
+
+
+void BubbleSort(vector<int> &data) {
+	for (int i = 0; i < data.size(); i++) {
+		for (int j = 0; j < data.size() - 1 - i; j++) {
+			if (data[j] > data[j + 1]) swap(data[j], data[j + 1]);
+		}
+	}
+}
+
+void SelectSort(vector<int> &data) {
+	for (int i = 0; i < data.size(); i++) {
+		int min = i;
+		for(int j = i; j < data.size(); j++) {
+			if (data[j] < data[min]) min = j;
+		}
+		swap(data[i], data[min]);
+	}
+}
+
+void insertionSort(vector<int> &data) {
+	for (int i = 1; i < data.size(); i++) {
+		int temp = data[i];
+		int j = i;
+		while (j > 0 && temp < data[j - 1]) {
+			data[j] = data[j - 1];
+			j--;
+		}
+		data[j] = temp;
+	}
+}
+
+
+//快排
+int partion(vector<int> &data,int left,int right){
+	int povit = data[left];
+	while (left < right) {
+		while (left < right && data[right] >= povit) {
+			right--;
+		}
+		swap(data[right], data[left]);
+		while (left < right && data[left] <= povit) {
+			left++;
+		}
+		swap(data[left], data[right]);
+	}
+	return left;
+}
+void QSort(vector<int> &data, int left, int right) {
+	if (left < right) {
+		int mid = partion(data, left, right);
+		QSort(data, left, mid - 1);
+		QSort(data, mid + 1, right);
+	}
+}
+void QuickSort(vector<int> &data) {
+	QSort(data, 0, data.size() - 1);
+}
+
+//希尔排序
+void shellSort(vector<int>& data) {
+	int len = data.size();
+	for (int gap = len / 2; gap >= 1; gap /= 2) {
+		for (int i = gap; i < len; i += gap) {
+			int temp = data[i];
+			int j = i;
+			while (j > 0 && temp < data[j - gap]) {
+				data[j] = data[j - gap];
+				j -= gap;
+			}
+			data[j] = temp;
+		}
+	}
+}
+
+//归并排序
+void merge(vector<int> &data, int left, int right) {
+	if (left == right) return;
+	int n = right - left + 1;
+	vector<int> temp(n,0);
+	int mid= (left + right) / 2;
+	int i = left, j = mid + 1, index = 0;
+	while (i <= mid && j <= right) {
+		if (data[i] < data[j])  temp[index++] = data[i++];
+		else temp[index++] = data[j++];
+	}
+	while (i <= mid)	temp[index++] = data[i++];
+	while (j <= right)  temp[index++] = data[j++];
+	for (int i = 0; i < temp.size(); i++) {
+		data[i+left] = temp[i];
+	}
+}
+void MSort(vector<int> &data, int left, int right) {
+	if (left == right) return;
+	int mid = (left + right) / 2;
+	MSort(data, left, mid);
+	MSort(data, mid + 1, right);
+	merge(data, left, right);
+}
+void MergeSort(vector<int> &data) {
+	MSort(data, 0, data.size() - 1);
+}
+
+//堆排序
+void HeapSort(vector<int> &data){
+
+
+
+
+}
+
+int main()
+{
+	vector<int> num = {2,4,5,1,9,7,3,9,8,11,6,10,77 };
+	//BubbleSort(num);
+	//SelectSort(num);
+	//insertionSort(num);
+	//QuickSort(num);
+	//shellSort(num);
+	//MergeSort(num);
+	for (auto i = num.begin(); i != num.end(); ++i) {
+		cout << *i << "-";
+	}
+	cout << endl;
+
+	return 0;
+}
+
+
