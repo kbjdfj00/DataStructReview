@@ -1,0 +1,49 @@
+//构建二叉树
+class Solution {
+public:
+    TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin) {
+        if(pre.size()==0) return NULL;
+        //pre[0]作为根节点
+        int value=pre[0];
+        TreeNode *root=new TreeNode(value);
+        
+        int index=find(vin,value);//找位置
+        
+        vector<int> lpre(pre.begin()+1,pre.begin()+index+1);
+        vector<int> lvin(vin.begin(),vin.begin()+index);
+        vector<int> rpre(pre.begin()+index+1,pre.end());
+        vector<int> rvin(vin.begin()+index+1,vin.end());
+        
+        root->left=reConstructBinaryTree(lpre,lvin);
+        root->right=reConstructBinaryTree(rpre,rvin);
+        
+        return root;
+    }
+    
+    
+    
+    int find(vector<int> &num,int k){
+        for(int i=0;i<num.size();i++){
+            if(num[i]==k){
+                return i;
+            }
+        }
+        return -1;
+    }
+};
+
+//树的子序列
+class Solution {
+public:
+    bool HasSubtree(TreeNode* pRoot1, TreeNode* pRoot2)
+    {
+        if(pRoot1==NULL || pRoot2==NULL) return false;
+        if(IS(pRoot1,pRoot2)) return true;
+        return HasSubtree(pRoot1->left,pRoot2) || HasSubtree(pRoot1->right,pRoot2);
+    }
+    bool IS(TreeNode* p1,TreeNode* p2){
+        if(p2==NULL) return true;
+        if(p1==NULL||p1->val!=p2->val) return false;
+        return IS(p1->left,p2->left)&&IS(p1->right,p2->right);
+    }
+};
