@@ -7,3 +7,17 @@ public:
     }
 };
 //&&&& 的短路原则
+
+
+
+//用pow函数和位运算代替乘除法
+
+class Solution {
+public:
+    int Sum_Solution(int n) {
+        int res=pow(n,2)+n;
+        res=res>>1; 
+        //相当于计算求和公式
+        return res;
+    }
+};
