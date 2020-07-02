@@ -121,8 +121,35 @@ void MergeSort(vector<int> &data) {
 	MSort(data, 0, data.size() - 1);
 }
 
-//堆排序
-void HeapSort(vector<int> &data){
+
+
+//堆排
+void heapify(vector<int> &num, int i, int n) {
+	while (1) {
+		int maxpos = i;
+		if ((2 * i + 1)<n&&num[2 * i + 1] > num[i]) maxpos = 2 * i + 1;
+		if ((2 * i + 2) < n && num[2 * i + 2] > num[maxpos]) maxpos = 2 * i + 2;
+		if (maxpos == i) break;
+		swap(num[maxpos], num[i]);
+		i = maxpos;
+	}
+}
+
+void buildHeap(vector<int> &num, int n) {
+	for (int i = n / 2 - 1; i >= 0; i--) {
+		heapify(num, i, n);
+	}
+}
+
+void HeapSort(vector<int>& num) {
+	int n = num.size();
+	buildHeap(num, n);
+	int k = n;
+	while (k > 0) {
+		swap(num[0], num[k - 1]);
+		k--;
+		heapify(num, 0, k);
+	}
 
 
 
