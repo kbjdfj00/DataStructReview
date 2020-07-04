@@ -1,0 +1,36 @@
+//分成三种情况
+//1.该节点有右子树，右子树的最左是我们求的下一个节点
+//2.该节点没有右子树，但是该节点是其父亲节点的左儿子，则其父亲节点就是我们求的下一个节点
+//3.该节点没有右子树，切该节点也不是其父亲节点的儿子，则一直沿着父指针向上，知道有一个节点是其父亲节点左儿子，则此节点的父亲节点就是我们求的下一个节点
+
+class Solution {
+public:
+    TreeLinkNode* GetNext(TreeLinkNode* pNode)
+    {
+        if(pNode==NULL) return NULL;
+        TreeLinkNode* res=NULL;
+        if(pNode->right!=NULL){
+            auto temp=pNode->right;
+            while(temp->left!=NULL){
+                temp=temp->left;
+            }
+            res=temp;
+        }else if(pNode->next!=NULL){
+            auto temp=pNode;
+            if(temp==temp->next->left){
+                res=temp->next;
+            }else{
+                auto p1=temp->next;
+                while(p1->next!=NULL){
+                    auto p2=p1->next;
+                    if(p1==p2->left){
+                        res=p2;
+                        break;
+                    }
+                    p1=p1->next;
+                }
+            }
+        }
+        return res;
+    }
+};
