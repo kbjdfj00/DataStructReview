@@ -1,0 +1,49 @@
+//思路：先遍val到数组中，然后找到第K个值，然后用BST的查找，返回找到的点
+
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    TreeNode* KthNode(TreeNode* pRoot, int k)
+    {
+        vector<int> res;
+        auto t=pRoot;
+        PreOrder(t,res);
+        if(res.size()<k) return NULL;
+        sort(res.begin(),res.end());
+         
+        int value=res[k-1];
+        return find(pRoot,value);
+    }
+     
+    void PreOrder(TreeNode* p,vector<int> &res){
+        if(p==NULL) return;
+        if(p!=NULL){
+            res.push_back(p->val);
+            PreOrder(p->left,res);
+            PreOrder(p->right,res);
+        }
+    }
+     
+    TreeNode* find(TreeNode* p,int k){
+        if(p==NULL) return NULL;
+        auto temp=p;
+        while(temp!=NULL){
+            if(k<temp->val){
+                temp=temp->left;
+            }else if(k>temp->val){
+                temp=temp->right;
+            }else
+                return temp;
+        }
+        return NULL;
+    }
+};
