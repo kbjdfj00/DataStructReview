@@ -1,1 +1,37 @@
+//递归：左子树转换，root接在后面，右子树转换，接在root后面
 
+
+
+
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};*/
+class Solution {
+public:
+    TreeNode* Convert(TreeNode* p)
+    {
+        if(p==NULL) return NULL;
+        if(p->left==NULL && p->right==NULL) return p;
+        auto pl=Convert(p->left);
+        auto temp=pl;
+        while(temp!=NULL&&temp->right!=NULL){
+            temp=temp->right;
+        }
+        if(pl!=NULL){
+            temp->right=p;
+            p->left=temp;
+        }
+        auto pr=Convert(p->right);
+        if(pr!=NULL){
+            pr->left=p;
+            p->right=pr;
+        }
+        return pl!=NULL?pl:p;
+    }
+};
