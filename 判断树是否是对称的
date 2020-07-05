@@ -1,0 +1,41 @@
+//我的错误的想法：对比镜像前后的前序中序序列，如果相等代表镜像前后树是一样的，代表树是对称
+//但是：解决不了所有的节点值都相等的情况
+
+class Solution {
+public:
+    bool isSymmetrical(TreeNode* pRoot)
+    {
+        auto temp = pRoot;
+        vector<int> t1;
+        vector<int> t2;
+        vector<int> p1;
+        vector<int> p2;
+        preOrder(pRoot, p1);
+        inOrder(pRoot, p2);
+        Mirror(temp);
+        preOrder(temp, t1);
+        inOrder(temp, t2);
+        if (p1 == t1 && p2 == t2)    return true;
+        else return false;
+    }
+    void Mirror(TreeNode *pRoot) {
+        if(pRoot==NULL)    return;
+        TreeNode *temp=pRoot->left;
+        pRoot->left=pRoot->right;
+        pRoot->right=temp;
+        Mirror(pRoot->left);
+        Mirror(pRoot->right);
+    }
+    void inOrder(TreeNode* p,vector<int> &r) {
+        if (p == NULL) return ;
+        inOrder(p->left,r);
+        r.push_back(p->val);
+        inOrder(p->right, r);
+    }
+    void preOrder(TreeNode* p, vector<int>& r) {
+        if (p == NULL) return;
+        r.push_back(p->val);
+        preOrder(p->left, r);
+        preOrder(p->right, r);
+    }
+};
