@@ -38,4 +38,31 @@ public:
         preOrder(p->left, r);
         preOrder(p->right, r);
     }
+}
+
+
+//正确的方法是：递加深度优先搜索
+
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    bool isSymmetrical(TreeNode* pRoot)
+    {
+        return pRoot==NULL?true:DFS(pRoot->left,pRoot->right);
+    }
+    bool DFS(TreeNode* p1,TreeNode* p2){
+        if(p1==NULL&&p2==NULL) return true;
+        if(p1==NULL || p2==NULL || p1->val!=p2->val) return false;
+        return DFS(p1->left,p2->right)&&DFS(p2->left,p1->right);
+    }
+ 
 };
