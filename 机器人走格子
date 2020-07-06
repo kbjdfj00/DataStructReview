@@ -1,0 +1,36 @@
+//BFS
+
+class Solution {
+public:
+    int res=0;
+    int movingCount(int m, int n, int k) {        
+        vector<vector<int> > state(m,vector<int>(n,0));
+        dfs(state,0,0,m,n,k);
+        return res;
+        
+    }
+    void dfs(vector<vector<int> > &state,int i,int j,int m,int n,int k){
+        if(i<0 || j<0 ||i>=m||j>=n) return;
+        if(state[i][j]==0&&check(i,j,k)){
+            res++;
+            state[i][j]=1;
+            dfs(state,i+1,j,m,n,k);
+            dfs(state,i,j+1,m,n,k);
+        }
+        return;
+    }
+    
+       bool check(int i,int j,int k){
+        int sum = 0;
+        while(i){
+            sum += i % 10;
+            i/=10;
+        }
+        while(j){
+            sum +=j%10;
+            j/=10;
+        }
+        return sum<=k;
+    }
+
+};
