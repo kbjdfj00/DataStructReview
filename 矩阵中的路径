@@ -1,0 +1,48 @@
+class Solution {
+public:
+    vector<vector<char> > m;
+    vector<vector<int> > flag;
+    int row,col;
+    char* s;
+    bool hasPath(char* matrix, int rows, int cols, char* str)
+    {   
+        if(rows<=0 || cols<=0 || strlen(str)==0){
+            return false;
+        }
+        vector<vector<char> > mat(rows,vector<char>(cols));
+        for(int i=0;i<rows;i++){
+            for(int j=0;j<cols;j++){
+                mat[i][j]=matrix[i*cols+j];
+            }
+        }
+        vector<vector<int> > tf(rows,vector<int>(cols,0));
+        //初始化数据
+        flag=tf;
+        m=mat;
+        row=rows;
+        col=cols;
+        s=str;
+         
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++){
+                if(DFS(i,j,0)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+     
+    bool DFS(int i,int j,int index){
+        if(index == strlen(s)) return true;
+        if(i<0||j<0||i>=row||j>=col) return false;
+        if(flag[i][j]) return false;
+        if(s[index]!=m[i][j]) return false;
+        flag[i][j]=1;
+        if(DFS(i-1,j,index+1) || DFS(i+1,j,index+1) || DFS(i,j-1,index+1) || DFS(i,j+1,index+1)){
+            return true;
+        }
+        flag[i][j]=0;
+        return false;
+    }
+};
