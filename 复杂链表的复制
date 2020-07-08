@@ -1,1 +1,62 @@
+//思路：1.先克隆每一个节点，并放在原来的节点后面。2.复制Random指针的指向，复制的节点指向原节点指向的下一个。3.再把两个链表分开，返回复制的链表的头节点
 
+
+
+/*
+struct RandomListNode {
+    int label;
+    struct RandomListNode *next, *random;
+    RandomListNode(int x) :
+            label(x), next(NULL), random(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    RandomListNode* Clone(RandomListNode* pHead)
+    {
+        Clone1(pHead);
+        Clone2(pHead);
+        return Clone3(pHead);
+    }
+    
+    void Clone1(RandomListNode* pHead){
+        auto temp=pHead;
+        while(temp!=NULL){
+            RandomListNode* pClone=new RandomListNode(temp->label);
+            pClone->next=temp->next;
+            temp->next=pClone;
+            temp=pClone->next;
+        }
+    }
+    
+    void Clone2(RandomListNode* pHead){
+        auto temp1=pHead;
+        while(temp1!=NULL){
+            auto temp2=temp1->next;
+            if(temp1->random!=NULL){
+                temp2->random=temp1->random->next;
+            }
+            temp1=temp2->next;
+        }
+    }
+    
+    RandomListNode* Clone3(RandomListNode* pHead){
+        RandomListNode* pCloneHead=NULL;
+        RandomListNode* pCloneNode=NULL;
+        auto temp1=pHead;
+        if(temp1!=NULL){
+            pCloneNode=temp1->next;
+            pCloneHead=pCloneNode;
+            temp1->next=pCloneNode->next;
+            temp1=temp1->next;
+        }
+        while(temp1!=NULL){
+            pCloneNode->next=temp1->next;
+            pCloneNode=pCloneNode->next;
+            temp1->next=pCloneNode->next;
+            temp1=temp1->next;
+        }
+        return pCloneHead;
+    }
+};
