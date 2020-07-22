@@ -1,0 +1,43 @@
+class Solution {
+public:
+    int translateNum(int num) {
+        vector<int> temp;
+        while(num>0){
+            int t=num%10;
+            temp.push_back(t);
+            num=num/10;
+        }
+        reverse(temp.begin(),temp.end());
+        int len=temp.size();  
+        if(len==0) return 1;
+        if(len==1) return 1;
+        int sum=temp[0]*10+temp[1];
+        if(len==2){
+            if(sum>25 || temp[0]==0){
+                return 1;
+            }else{
+                return 2;
+            }
+        } 
+        vector<int> dp(len,0);
+        dp[0]=1;
+        sum=temp[0]*10+temp[1];
+        if(sum>25 || temp[0]==0){
+            dp[1]=1;
+        }else{
+            dp[1]=2;
+        }
+
+
+
+        for(int i=2;i<len;i++){
+            sum=temp[i]+temp[i-1]*10;
+            if(sum>25||temp[i-1]==0){
+                dp[i]=dp[i-1];
+            }else{
+                dp[i]=dp[i-1]+dp[i-2];
+            }
+        }
+        return dp[len-1];
+    }
+};
