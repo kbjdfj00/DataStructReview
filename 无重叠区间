@@ -20,3 +20,28 @@ public:
         return num.size()-res;
     }
 };
+
+
+或者用贪心算法
+class Solution {
+public:
+    static bool cmp(vector<int>& a,vector<int>& b){
+        return a[1]<b[1];
+    }
+    int eraseOverlapIntervals(vector<vector<int>>& num) {
+        if(num.size()==0) return 0;
+
+        sort(num.begin(),num.end(),cmp);
+        int res=0;
+        int end=num[0][1];
+        for(int i=1;i<num.size();i++){
+            if(num[i][0]<end){
+                res++;
+            }else{
+                end=num[i][1];
+            }
+        }
+        
+        return res;
+    }
+};
