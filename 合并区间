@@ -1,0 +1,25 @@
+//先排序，然后比较当前的first和前面的second
+
+class Solution {
+public:
+
+ 
+    vector<vector<int>> merge(vector<vector<int>>& in) {
+        vector<vector<int>> res;
+        sort(in.begin(),in.end());
+
+        if(in.size()==0) return res;
+        res.push_back(in[0]);
+        if(in.size()==1) return res;
+        for(int i=1;i<in.size();i++){
+            if(in[i][0]<=res.back()[1]){
+                res.back()[1]=max(res.back()[1],in[i][1]);
+            }else{
+                res.push_back(in[i]);
+            }
+        } 
+
+
+        return res;
+    }
+};
