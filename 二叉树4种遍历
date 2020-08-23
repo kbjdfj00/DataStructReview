@@ -1,0 +1,33 @@
+//3种递归：
+//前序：
+void preOrder(TreeNode* root){
+        if(root == NULL){
+            return;
+        }
+        cout<<root->val;
+        preOrder(root.left);
+        preOrder(root.right);
+}
+//中序：
+void inOrder(TreeNode* root){
+        if(root == NULL){
+            return;
+        }
+        inOrder(root.left);
+        cout<<root->val;
+        inOrder(root.right);
+}
+//后序：
+void postOrder(TreeNode* root){
+        if(root == NULL){
+            return;
+        }
+        postOrder(root.left);
+        postOrder(root.right);
+        cout<<root->val;
+}
+
+//3种非递归：
+//前序：
+//中序：
+//后序：
