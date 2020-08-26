@@ -1,0 +1,25 @@
+//两栈实现队列
+class myqueue{
+    public:
+        myqueue(){};
+
+        void push(int n){
+            s1.push(n);
+        }
+
+        void pop(){
+            if(s2.empty()){
+                while(!s1.empty()){
+                    auto temp=s1.top();
+                    s1.pop();
+                    s2.push(temp);
+                }
+            }
+            auto temp1=s2.top();
+            s2.pop();
+            cout<<temp1<<' ';
+        }
+    private:
+        stack<int> s1;
+        stack<int> s2;
+};
