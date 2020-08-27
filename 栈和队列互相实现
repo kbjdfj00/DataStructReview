@@ -1,4 +1,5 @@
-//两栈实现队列
+****************************************************************************
+//两栈实现队列:
 class myqueue{
     public:
         myqueue(){};
@@ -22,4 +23,50 @@ class myqueue{
     private:
         stack<int> s1;
         stack<int> s2;
+};
+******************************************************************************
+//两队列实现栈：
+class mystack{
+    public:
+    //保持一个队列是空的
+        void push(int n){
+            if(q1.empty()){
+                q2.push(n);
+            }else{
+                q1.push(n);
+            }
+        }
+        void pop(){
+            if(q1.empty()){
+                while(q2.size()>1){
+                    q1.push(q2.front());
+                    q2.pop();
+                }
+                cout<<q2.front();
+                q2.pop();
+            }else{
+                  while(q1.size()>1){
+                    q2.push(q1.front());
+                    q1.pop();
+                }
+                cout<<q1.front();
+                q1.pop();
+            }
+        }
+
+        bool empty(){
+            return q1.empty()&&q2.empty();
+        }
+
+        int top(){
+            if(q1.empty()){
+                return q2.back();
+            }else{
+                return q1.back();
+            }
+        }
+        
+    private:
+        queue<int> q1;
+        queue<int> q2;
 };
