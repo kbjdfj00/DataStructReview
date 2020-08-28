@@ -63,7 +63,45 @@ public:
         }
         return res;
     }
-
+};
 
 *********************************************************************
 //快排思想：
+void swap(int &a, int &b) {
+	    int temp = a;
+	    a = b;
+	    b = temp;
+    }
+int partion(vector<int> &data,int left,int right){
+    int povit = data[left];
+    while (left < right) {
+        while (left < right && data[right] <= povit) {
+            right--;
+        }
+        swap(data[right], data[left]);
+        while (left < right && data[left] >= povit) {
+            left++;
+        }
+        swap(data[left], data[right]);
+    }
+    return left;
+}
+
+vector<int> GetLeastNumbers_Solution(vector<int> input, int k) {
+    vector<int> res;       
+    if(input.empty() || k>input.size() || k<=0) return res;
+    int left=0,right=input.size()-1;
+    int index=partion(input,left,right);
+    while(index!=k-1){
+        if(index>k-1){
+            right=index-1;
+            index=partion(input,left,right);
+        }else{
+            left=index+1;
+            index=partion(input,left,right);
+        }
+    }
+
+    res.assign(input.begin(),input.begin()+k);
+    return res;
+}
