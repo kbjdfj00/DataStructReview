@@ -1,5 +1,68 @@
 *********************************************************************
+//最小堆排序：
+void heapify(vector<int> &num, int i, int n) {
+	    while (1) {
+		    int maxpos = i;
+		    if ((2 * i + 1)<n&&num[2 * i + 1] < num[i]) maxpos = 2 * i + 1;
+		    if ((2 * i + 2) < n && num[2 * i + 2] < num[maxpos]) maxpos = 2 * i + 2;
+		    if (maxpos == i) break;
+		    swap(num[maxpos], num[i]);
+		    i = maxpos;
+	    }
+    }
+
+void buildHeap(vector<int> &num, int n) {
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        heapify(num, i, n);
+    }
+}
+void heapSort(vector<int>& num){
+    buildHeap(num,num.size());
+    int k=num.size();
+    while(k){
+        swap(num[0],num[k-1]);
+        k--;
+        heapify(num,0,k);
+    }
+}
+*********************************************************************
 //海量数据，堆排序：
+class Solution {
+public:
+    void swap(int &a, int &b) {
+	    int temp = a;
+	    a = b;
+	    b = temp;
+    }
+    void heapify(vector<int> &num, int i, int n) {
+	    while (1) {
+		    int maxpos = i;
+		    if ((2 * i + 1)<n&&num[2 * i + 1] < num[i]) maxpos = 2 * i + 1;
+		    if ((2 * i + 2) < n && num[2 * i + 2] < num[maxpos]) maxpos = 2 * i + 2;
+		    if (maxpos == i) break;
+		    swap(num[maxpos], num[i]);
+		    i = maxpos;
+	    }
+    }
+    void buildHeap(vector<int> &num, int n) {
+	    for (int i = n / 2 - 1; i >= 0; i--) {
+	    	heapify(num, i, n);
+	    }
+    }
+    vector<int> GetLeastNumbers_Solution(vector<int> input, int k) {
+        vector<int> res;
+        if(input.empty() || input.size() < k || k <= 0) return res;
+        res.assign(input.begin(),input.begin()+k);
+        
+        buildHeap(res,k);
+        for(int i=k;i<input.size();i++){
+            if(input[i]>res[0]){
+                res[0]=input[i];
+                heapify(res,0,k);
+            }
+        }
+        return res;
+    }
 
 
 *********************************************************************
