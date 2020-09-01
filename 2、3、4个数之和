@@ -1,0 +1,57 @@
+class Solution {
+public:
+     vector<vector<int>> twoSum(vector<int>& num, int start,int t) {
+        
+        int l=start,r=num.size()-1;
+        vector<vector<int> > res;
+        while(l<r){
+            int left=num[l];
+            int right=num[r];
+            int sum=left+right;
+            if(sum<t){
+            while(l<num.size()&&num[l]==left) l++;
+                }else if(sum>t){
+                     while(r>=0&&num[r]==right) r--;
+                }else{
+                    res.push_back({left,right});
+                 while(l<r&&num[l]==left) l++;
+                 while(l<r&&num[r]==right) r--;
+            }
+        }
+        return res;
+    }
+
+
+    vector<vector<int>> threeSum(vector<int>& nums,int start,int sum) {
+        int n = nums.size();
+        vector<vector<int>> res;
+        for (int i = start; i < n; i++) {
+            vector<vector<int>> tuples = twoSum(nums, i + 1, sum - nums[i]);
+            if(tuples.size()!=0){
+                for (auto tuple : tuples) {
+                    tuple.push_back(nums[i]);
+                    res.push_back(tuple);
+                }
+                while (i < n - 1 && nums[i] == nums[i + 1]) i++;
+            }
+        }
+        return res;
+    }
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        int n=nums.size();
+        sort(nums.begin(),nums.end());
+        vector<vector<int> > res;
+        for(int i=0;i<n;i++){
+            vector<vector<int> > temp=threeSum(nums,i+1,target-nums[i]);
+            if(temp.size()!=0){
+                for(auto t:temp){
+                    t.push_back(nums[i]);
+                    res.push_back(t);
+                }
+                while(i<n-1&&nums[i]==nums[i+1]) i++;
+            }
+        }
+        return res;
+        
+    }
+};
