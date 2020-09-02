@@ -1,0 +1,278 @@
+*************************************************************************
+1、【链表问题】如何优雅着反转单链表
+2、【链表问题】删除单链表中的第K个节点
+3、【链表问题】删除单链表的中间节点
+4、【链表问题】环形单链表约瑟夫问题
+5、【链表问题】三种方法带你优雅判断回文链表
+6、【链表问题】将单向链表按某值划分成左边小，中间相等，右边大的形式
+7、【链表问题】复制含有随机指针节点的链表
+8、【链表问题】将单链表的每K个节点之间逆序
+9、【链表问题】将搜索二叉树转换成双向链表
+10、【二叉树问题】二叉树的先序遍历(非递归版)
+11、【二叉树问题】二叉树的中序编历(非递归版)
+12、【二叉树问题】二叉树的后序遍历(非递归版)
+13、【二叉树问题】从上往下打印二叉树
+14、【二叉树问题】从上往下打印二叉树
+15、【二叉树问题】二叉树镜像
+16、【二叉树问题】二叉树的子结构
+17、【二叉树问题】重建二叉树
+***************************************************************************
+  //反转单链表
+    public static Node reverseList(Node head) {
+        Node next = null;//指向当前节点的后驱
+        Node pre = null;//指向当前节点的前驱
+        while (head != null) {
+            next = head.next;
+            //当前节点的后驱指向前驱
+            head.next = pre;
+            pre = head;
+            //处理下一个节点
+            head = next;
+        }
+        return pre;
+***************************************************************************
+//删除第K个节点
+public Node removeLastKthNode(Node head, int K) {
+       if(head == null || K < 1)
+           return head;
+       Node temp = head;
+       int num = 0;
+       while (temp != null) {
+           num++;
+           temp = temp.next;
+       }
+       if (num == K) {
+           return head.next;
+       }
+       if (num > K) {
+           temp = head;
+           //删除第(num-k+1)个节点
+           //定位到这个点的前驱
+           while (num - K != 0) {
+               temp = temp.next;
+               num--;
+           }
+           temp.next = temp.next.next;
+       }
+       return head;
+   }
+   *************************************************************************
+   //删除中间节点
+   public static Node removeMidNode(Node head) {
+        if(head == null || head.next == null)
+            return head;
+        if (head.next.next == null) {
+            return head.next;
+        }
+        Node fast = head.next.next;//快指针
+        Node slow = head;//慢指针
+
+        //slow最终指向中间节点的前驱
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        //进行删除
+        slow.next = slow.next.next;
+        return head;
+    }
+    ***********************************************************************
+      //环形单链表约瑟夫问题:
+      //时间复杂度为O(n*m)的解决方法
+ 2    public static Node josephusKill(Node head, int m) {
+ 3        if(head == null || m < 1)
+ 4            return head;
+ 5        Node last = head;
+ 6        //定位到最后一个节点
+ 7        while (head.next != last) {
+ 8            head = head.next;
+ 9        }
+10        int count = 0;
+11        while (head.next != head) {
+12            if (++count == m) {
+13                head.next = head.next.next;
+14                count = 0;
+15            } else {
+16                head = head.next;
+17            }
+18        }
+19        return head;
+20    }
+***************************************************************************
+//判断回文链表：
+//方法1
+ 2public static boolean f1(Node head) {
+ 3    if (head == null || head.next == null) {
+ 4        return true;
+ 5    }
+ 6    Node temp = head;
+ 7    Stack<Node> stack = new Stack<>();
+ 8    while (temp != null) {
+ 9        stack.push(temp);
+10        temp = temp.next;
+11    }
+12    while (!stack.isEmpty()) {
+13        Node t = stack.pop();
+14        if (t.value != head.value) {
+15            return false;
+16        }
+17        head = head.next;
+18    }
+19    return true;
+20}
+//先翻转后一部分，再比较：
+ 2public static boolean f2(Node head) {
+ 3    if(head == null || head.next == null)
+ 4        return true;
+ 5    Node slow = head;//慢指针
+ 6    Node fast = head;//快指针
+ 7    //slow最终指向中间节点
+ 8    while (fast.next != null && fast.next.next != null) {
+ 9        slow = slow.next;
+10        fast = fast.next.next;
+11    }
+12    Node revHead = reverse(slow.next);//反转后半部分
+13    //进行比较
+14    while (revHead != null) {
+15        System.out.println(revHead.value);
+16        if (revHead.value != head.value) {
+17            return false;
+18        }
+19        head = head.next;
+20        revHead = revHead.next;
+21    }
+22    return true;
+23}
+24
+//翻转：
+25private static Node reverse(Node head) {
+26    if (head == null || head.next == null) {
+27        return head;
+28    }
+29    Node newHead = reverse(head.next);
+30    head.next.next = head;
+31    head.next = null;
+32    return newHead;
+33}
+
+****************************************************************************
+//将单向链表按某值划分成左边小，中间相等，右边大的形式：
+//用三个指针处理，这道题主要是要注意串联链表时的一些细节处理
+ 2public static Node listPartition(Node head, int pivot) {
+ 3    Node sB = null;//小的指针头，即small begin
+ 4    Node sE = null;//小的指针尾，即 small end
+ 5    Node eB = null;//中的指针头，即 equal begin
+ 6    Node eE = null;//中的指针尾，即emall end
+ 7    Node bB = null;//大的指针头，即 big begin
+ 8    Node bE = null;//大的指针尾，即 big end
+ 9    Node next = null;//保存下一个节点
+10    //进行划分
+11    while (head != null) {
+12        next = head.next;
+13        head.next = null;
+14        if (head.value < pivot) {
+15            if (sB == null) {
+16                sB = head;
+17                sE = head;
+18            } else {
+19                sE.next = head;
+20                sE = sE.next;
+21            }
+22        } else if (head.value == pivot) {
+23            if (eB == null) {
+24                eB = head;
+25                eE = head;
+26            } else {
+27                eE.next = head;
+28                eE = eE.next;
+29            }
+30        } else {
+31            if (bB == null) {
+32                bB = head;
+33                bE = head;
+34            } else {
+35                bE.next = head;
+36                bE = bE.next;
+37            }
+38        }
+39        head = next;
+40    }
+41    //把三部分串连起来，串联的时候细节还是挺多的，
+42    //串联的过程下面代码的精简程度是最学习的部分了
+43
+44    //1.小的与中的串联
+45    if (sB != null) {
+46        sE.next = eB;
+47        eE = eE == null ? sE : eE;
+48    }
+49    //2.中的和大的连接
+50    if (eB != null) {
+51        eE.next = bB;
+52    }
+53    return sB != null ? sB : eB != null ? eB : bB;
+54}
+********************************************************************
+//复制含有随机指针节点的链表：
+//前面有
+********************************************************************
+//将单链表的每K个节点之间逆序:
+//前面有
+*******************************************************************
+//将搜索二叉树转换成双向链表:
+//前面有：
+********************************************************************
+//二叉树的前序遍历(非递归版)
+//二叉树的中序编历(非递归版)
+//二叉树的后序遍历(非递归版)
+//二叉树的层序遍历
+//前面有
+*****************************************************************
+//二叉树镜像：
+ void MirrorRecursively(TreeNode *pRoot)
+ 2 {
+ 3     if((pRoot == NULL) || (pRoot->left == NULL && pRoot->right))
+ 4         return;
+ 5 
+ 6     TreeNode *pTemp = pRoot->left;
+ 7     pRoot->left = pRoot->right;
+ 8     pRoot->right = pTemp;
+ 9     
+10     if(pRoot->left)
+11         MirrorRecursively(pRoot->left);  
+12 
+13     if(pRoot->right)
+14         MirrorRecursively(pRoot->right); 
+15 }
+//非递归：
+void MirrorIteratively(TreeNode* pRoot)
+{
+    if(pRoot == NULL)
+        return;
+
+    std::stack<TreeNode*> stackTreeNode;
+    stackTreeNode.push(pRoot);
+
+    while(stackTreeNode.size() > 0)
+    {
+        TreeNode *pNode = stackTreeNode.top();
+        stackTreeNode.pop();
+
+        TreeNode *pTemp = pNode->left;
+        pNode->left = pNode->right;
+        pNode->right = pTemp;
+
+        if(pNode->left)
+            stackTreeNode.push(pNode->left);
+
+        if(pNode->right)
+            stackTreeNode.push(pNode->right);
+    }
+}
+
+*************************************************************************
+//判断B是不是A的子结构:
+//前面有：
+*************************************************************************
+//前序遍历和中序,重建二叉树：
+//前面有
+************************************************************************
