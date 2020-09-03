@@ -1,4 +1,5 @@
 *************************************************************************
+0、【链表问题】环形链表找入口：
 1、【链表问题】如何优雅着反转单链表
 2、【链表问题】删除单链表中的第K个节点
 3、【链表问题】删除单链表的中间节点
@@ -16,6 +17,40 @@
 15、【二叉树问题】二叉树镜像
 16、【二叉树问题】二叉树的子结构
 17、【二叉树问题】重建二叉树
+**************************************************************************
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if(head==NULL) return NULL;
+
+        auto slow=head;
+        auto fast=head;
+        while(fast&&fast->next){
+            slow=slow->next;
+            fast=fast->next->next;
+            if(slow==fast){
+                break;
+            }
+        }
+        if(fast==NULL||fast->next==NULL) return NULL;
+        auto temp1=head;
+        auto temp2=fast;
+
+        while(temp1!=temp2){
+            temp1=temp1->next;
+            temp2=temp2->next;
+        }
+        return temp1?temp1:NULL;
+    }
+};
 ***************************************************************************
   //反转单链表
     public static Node reverseList(Node head) {
