@@ -1,0 +1,119 @@
+class Queue
+  7 {
+  8    public:
+  9     Queue(int size=10)      //  构造函数
+ 10     {
+ 11         _pQue=new int[size];
+ 12         _front=0;
+ 13         _rear=0;
+ 14         _size=size;
+ 15      }
+ 16     ~Queue()              //析构函数
+ 17     {
+ 18       delete []_pQue;
+ 19       _pQue=nullptr;
+ 20     }
+ 21     Queue(const Queue &que)      //拷贝构造函数（防止浅拷贝）
+ 22     {
+ 23       _PQue=new int[que._size];
+ 24       int i=que._front;
+ 25       for(;i!=que._rear;i=(i+1)%que._size)
+ 26          {
+ 27           _pQue[i]=que._pQue[i];
+ 28          }
+ 29          _front=que._front;
+ 30          _rear=que._rear;
+ 31          _size=que._size;
+ 32     }
+ 33     Queue & operator=(const Queue &que)     //赋值构造函数  返回地址  可以实现连续赋值
+ 34     {
+ 35       if(this==&que)
+ 36          {
+ 37             return *this;
+ 38           }
+ 39          delete []_pQue;
+ 40          _pQue=new int[que._size];
+ 41          int i=que._front;
+ 42          for(;i!=que._rear;i=(i+1)%que._size)
+ 43             {
+ 44               _pQue[i]=que._pQue[i];
+ 45             }
+ 46             _front=que._front;
+ 47             _rear=que._rear;
+ 48             _size=que._szie;
+ 49             return *this;
+ 50     }
+ 51     Queue(Queue &&que)                     //右值拷贝函数  防止临时量对空间时间的浪费
+ 52     {
+ 53       _pQue=que._pQue;
+ 54       _front=que._front;
+ 55       _rear=que._rear;
+ 56       _size=que._size;
+ 57       que._pQue=nullptr;
+ 58     }
+ 59     Queue & operator=(Queue &&que)           //  右值赋值构造函数   防止临时量对空间时间的浪费
+ 60     {
+ 61      delete []_pQue;
+ 62      _pQue=que._pQue;
+ 63      _front=que._front;
+ 64      _rear=que._rear;
+ 65      _size=que._size;
+ 66      que._pQue=nullptr;
+ 67       return *this;
+ 68     }
+ 69     void addQue(int val)                   //队尾插入
+ 70     {
+ 71       if(full())
+ 72        {
+ 73         resize();
+ 74        }    
+ 75       _pQue[_rear]=val;
+ 76      _rear=(_rear+1)%_size;
+ 77     }
+ 78     void delQue()                       //  出队
+ 79     {    
+ 80      if(empty())
+ 81        { 
+ 82         return;
+ 83        }
+ 84        _front=(_front+1)%_size;
+ 85      
+ 86     }
+ 87     int front()                  // 返回队头元素
+ 88     {    
+ 89      return  _pQue[_front];
+ 90     }
+ 91     int back()                   //返回队尾元素
+ 92     {    
+ 93      return _pQue[_rear-1+_size]%_size;
+ 94     }
+ 95     bool empty()               //  是否队空
+ 96     { 
+ 97      return _front==_rear;   
+ 98     }
+ 99     bool full() 　　　　　　　　//  是否对满   　　　　　　
+100     {    
+101        return (_rear+1)%_size==_front;
+102     }
+103  private:
+104     int *_pQue;           //指向申请的空间地址
+105     int _front;           //  队头
+106     int _rear;            //   队尾
+107     int _size;            //  空间大小
+108     void resize()         //   2倍扩容函数
+109     {    
+110      int *tmp=new int[_size*2];
+111      int i=_front;
+112      int j=0;
+113      for(i;i!=_rear;i=(i+1)%_size)
+114        {
+115          tmp[j++]=_pQue[i];
+116        }
+117        _front=0;
+118        _rear=j;
+119        delete []_pQue;
+120        _pQue=tmp;
+121        tmp=nullptr;
+122        _size*=2;
+123       }    
+124     };           
