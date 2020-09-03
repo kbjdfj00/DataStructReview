@@ -1,3 +1,5 @@
+*****************************************************************************************************************
+//全排列：
 //思路：DFS递归，先固定第一个，然后求后面的全排列，然后第一个依次与后面的交换，然后再递归，要考虑重复的问题
 //也可以不考虑，用set去重
 
@@ -32,3 +34,48 @@ public:
         b=t;
     }
 };
+*********************************************************************************************************************
+//组合：
+vector<vector<int>>res;
+
+vector<vector<int>> combine(int n, int k) {
+    if (k <= 0 || n <= 0) return res;
+    vector<int> track;
+    backtrack(n, k, 1, track);
+    return res;
+}
+
+void backtrack(int n, int k, int start, vector<int>& track) {
+    // 到达树的底部
+    if (k == track.size()) {
+        res.push_back(track);
+        return;
+    }
+    // 注意 i 从 start 开始递增
+    for (int i = start; i <= n; i++) {
+        // 做选择
+        track.push_back(i);
+        backtrack(n, k, i + 1, track);
+        // 撤销选择
+        track.pop_back();
+    }
+}
+*********************************************************************************
+//子集：
+vector<vector<int>> subsets(vector<int>& nums) {
+    // base case，返回一个空集
+    if (nums.empty()) return {{}};
+    // 把最后一个元素拿出来
+    int n = nums.back();
+    nums.pop_back();
+    // 先递归算出前面元素的所有子集
+    vector<vector<int>> res = subsets(nums);
+
+    int size = res.size();
+    for (int i = 0; i < size; i++) {
+        // 然后在之前的结果之上追加
+        res.push_back(res[i]);
+        res.back().push_back(n);
+    }
+    return res;
+}
