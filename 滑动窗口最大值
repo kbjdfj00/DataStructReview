@@ -1,0 +1,47 @@
+************************************************
+//暴力：
+class Solution {
+public:
+    vector<int> maxInWindows(const vector<int>& num, unsigned int size)
+    {
+        vector<int> res;
+        if(num.empty() || size>num.size() || size<1)
+            return res;
+        for(int i=0;i<=num.size()-size;i++){
+            int max=num[i];
+            for(int j=i;j<i+size;j++){
+                if(max<num[j]) max=num[j];
+            }
+            res.push_back(max);
+        }
+        return res;
+    }
+};
+
+
+****************************************************
+//双端队列
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> res;
+        deque<int> tem;
+        for(int i=0;i<k;i++){
+            while(!tem.empty() && nums[i]>nums[tem.back()]){
+                 tem.pop_back();   
+            }
+            tem.push_back(i);
+        }
+        res.push_back(nums[tem.front()]);
+        for(auto i=k;i<nums.size();i++){
+            while(!tem.empty() && nums[i]>nums[tem.back()]){
+                tem.pop_back();
+            }
+            tem.push_back(i);
+            if(tem.front()<i-k+1) tem.pop_front();
+            res.push_back(nums[tem.front()]);
+        }
+        return res;
+    }
+};
