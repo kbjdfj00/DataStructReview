@@ -1,1 +1,22 @@
-
+class Solution {
+public:
+    int countDigitOne(int n) {
+        int count=0;
+        long long num=1;
+        while(num<=n){
+            int next=n%num;
+            int cur=(n%(num*10))/num;
+            int pre=n/(num*10);
+            if(cur>1){
+                count+=(pre+1)*num;
+            }else if(cur==1){
+                count+=pre*num+next+1;
+            }else{
+                count+=pre*num;
+            }
+            num=num*10;
+        }
+        return count;
+    }
+    
+};
