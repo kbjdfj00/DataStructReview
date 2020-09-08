@@ -1,109 +1,126 @@
 ****************************************************************************************
-//双向链表加哈希表：
+LRU 缓存机制可以通过哈希表辅以双向链表实现，我们用一个哈希表和一个双向链表维护所有在缓存中的键值对。
 
-#include<iostream>
-#include<map>
+双向链表按照被使用的顺序存储了这些键值对，靠近头部的键值对是最近使用的，而靠近尾部的键值对是最久未使用的。
 
-using namespace std;
+哈希表即为普通的哈希映射（HashMap），通过缓存数据的键映射到其在双向链表中的位置。
 
-/**
- * Definition of cachelist node, it's double linked list node.
- */
-struct CacheNode {
-  int key;
-  int value;
-  CacheNode *pre, *next;
-  CacheNode(int k, int v) : key(k), value(v), pre(NULL), next(NULL) {}
+这样以来，我们首先使用哈希表进行定位，找出缓存项在双向链表中的位置，随后将其移动到双向链表的头部，即可在 O(1)O(1) 的时间内完成 get 或者 put 操作。具体的方法如下：
+
+对于 get 操作，首先判断 key 是否存在：
+
+如果 key 不存在，则返回 -1−1；
+
+如果 key 存在，则 key 对应的节点是最近被使用的节点。通过哈希表定位到该节点在双向链表中的位置，并将其移动到双向链表的头部，最后返回该节点的值。
+
+对于 put 操作，首先判断 key 是否存在：
+
+如果 key 不存在，使用 key 和 value 创建一个新的节点，在双向链表的头部添加该节点，并将 key 和该节点添加进哈希表中。然后判断双向链表的节点数是否超出容量，如果超出容量，则删除双向链表的尾部节点，并删除哈希表中对应的项；
+
+如果 key 存在，则与 get 操作类似，先通过哈希表定位，再将对应的节点的值更新为 value，并将该节点移到双向链表的头部。
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/lru-cache/solution/lruhuan-cun-ji-zhi-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+// 总的思想就是 哈希双向链表
+struct Node
+{
+    int key;
+    int value;
+    Node* pre;
+    Node* next;
+    // 构造函数初始化
+    Node(int key, int value) : key(key), value(value), pre(nullptr), next(nullptr){}
 };
 
-class LRUCache{
+class LRUCache {
 private:
-  int size;                     // Maximum of cachelist size.
-  CacheNode *head, *tail;
-  map<int, CacheNode *> mp;          // Use hashmap to store
+    int size;// 缓冲区大小
+    Node* head;
+    Node* tail;
+    map<int, Node*> p;
+
 public:
-  LRUCache(int capacity)
-  {
-    size = capacity;
-    head = NULL;
-    tail = NULL;
-  }
+    LRUCache(int capacity) {
+        this->size = capacity;
+        head = nullptr;
+        tail = nullptr;
+    }
+// 获取缓冲区中 key 对应的 value
+    int get(int key) {
+        // 1.当该 key 值存在
+        if(p.count(key) > 0)
+        {
+            // 删除该 key 对应的原来节点
+            Node* cur = p[key];
+            int value = cur->value;
+            remove(cur);   // 这里仅仅删除哈希双向链表中的节点，不必删除哈希表中的                 
+            // 将节点重现插入到缓冲区的头部
+            setHead(cur);                     
+            return value;
+        }
+        // 2.当该 key 值不存在
+        return -1;
+    }
+// 将key-value值存入缓冲区
+    void put(int key, int value) {
+        // 1.当该 key 值存在
+        if(p.count(key) > 0)
+        {
+            // 删除该 key 对应的原来节点
+            Node* cur = p[key];
+            cur->value = value;
+            remove(cur);    // 这里仅仅删除哈希双向链表中的节点，不必删除哈希表中的                                
+            // 将节点重现插入到缓冲区的头部
+            setHead(cur);
+        }
+        else// 2.当该 key 值不存在
+        {
+            Node* node = new Node(key, value);
+            // 判断当前缓冲区大小已经满了
+            if(p.size() >= size)
+            {
+                // 删除尾部节点
+                map<int, Node*>::iterator it = p.find(tail->key);// 返回迭代器类型
+                remove(tail);
+                p.erase(it);// 这里erase 函数参数是迭代器类型，所以上面需要使用迭代器类型
+                // 将新节点插入到缓冲区的头部
+            }
+            //else 此时因为动作和上面重复，所以直接合并使用
+            //还没有满：将新节点插入到缓冲区的头部
+            {
+                setHead(node);
+                p[key] = node;
+            }
+        }
+    }
 
-  int get(int key)
-  {
-    map<int, CacheNode *>::iterator it = mp.find(key);
-    if (it != mp.end())
+    // 删除当前节点
+    void remove(Node* cur)
     {
-      CacheNode *node = it -> second;
-      remove(node);
-      setHead(node);
-      return node -> value;
+        // 当前节点是 head
+        if(cur == head)
+            head = cur->next;
+        else if(cur == tail)// 当前节点是 tail
+            tail = cur->pre;
+        else// 当前节点是一般节点
+        {
+            cur->pre->next = cur->next;
+            cur->next->pre = cur->pre;
+        }
     }
-    else
+    // 将当前节点插入到头部
+    void setHead(Node* cur)
     {
-      return -1;
-    }
-  }
+        cur->next = head;
+        if(head != nullptr)
+            head->pre = cur;
+        head = cur;//重现更新head
 
-  void set(int key, int value)
-  {
-    map<int, CacheNode *>::iterator it = mp.find(key);
-    if (it != mp.end())
-    {
-      CacheNode *node = it -> second;
-      node -> value = value;
-      remove(node);
-      setHead(node);
+        if(tail==nullptr)
+            tail = head;
     }
-    else
-    {
-      CacheNode *newNode = new CacheNode(key, value);
-      if (mp.size() >= size)
-      {
-	map<int, CacheNode *>::iterator iter = mp.find(tail -> key);
-      	remove(tail);
-	mp.erase(iter);
-      }
-      setHead(newNode);
-      mp[key] = newNode;
-    }
-  }
-
-  void remove(CacheNode *node)
-  {
-    if (node -> pre != NULL)
-    {
-      node -> pre -> next = node -> next;
-    }
-    else
-    {
-      head = node -> next;
-    }
-    if (node -> next != NULL)
-    {
-      node -> next -> pre = node -> pre;
-    }
-    else
-    {
-      tail = node -> pre;
-    }
-  }
-
-  void setHead(CacheNode *node)
-  {
-    node -> next = head;
-    node -> pre = NULL;
-
-    if (head != NULL)
-    {
-      head -> pre = node;
-    }
-    head = node;
-    if (tail == NULL)
-    {
-      tail = head;
-    }
-  }
 };
 
 
