@@ -9,6 +9,7 @@
 7、【链表问题】复制含有随机指针节点的链表
 8、【链表问题】将单链表的每K个节点之间逆序
 9、【链表问题】将搜索二叉树转换成双向链表
+9.重拍链表
 10、【二叉树问题】二叉树的先序遍历(非递归版)
 11、【二叉树问题】二叉树的中序编历(非递归版)
 12、【二叉树问题】二叉树的后序遍历(非递归版)
@@ -246,6 +247,63 @@ public Node removeLastKthNode(Node head, int K) {
 52    }
 53    return sB != null ? sB : eB != null ? eB : bB;
 54}
+********************************************************************
+//链表重拍：先找中间节点，断开两部分，后面的翻转，在拼接
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    void reorderList(ListNode* head) {
+        if(head==NULL||head->next==NULL){
+            return ;
+        }
+        auto fast=head;
+        auto slow=head;
+        while(fast!=NULL&&fast->next!=NULL){
+            fast=fast->next->next;
+            slow=slow->next;
+        }
+        auto p=slow->next;
+        slow->next=NULL;
+        p=reversel(p);
+        slow=head;
+        ListNode* pp=NULL;
+        ListNode* pslow=NULL;
+        while(p){
+            pslow=slow->next;
+            pp=p->next;
+            slow->next=p;
+            p->next=pslow;
+            p=pp;
+            slow=pslow;
+        }
+        return;
+    }
+    
+    ListNode* reversel(ListNode* root){
+        if(root==NULL||root->next==NULL){
+            return root;
+        }
+        ListNode* pre=NULL;
+        ListNode* next=NULL;
+        auto p=root;
+        while(p){
+            next=p->next;
+            p->next=pre;
+            pre=p;
+            p=next;
+        }
+        return pre;
+    }
+};
 ********************************************************************
 //复制含有随机指针节点的链表：
 //前面有
