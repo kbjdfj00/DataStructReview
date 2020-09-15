@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int count=0;
+        int num;
+        for(auto n:nums){
+           if(count==0){
+                num=n;
+                count++;
+            }else if(n==num){
+                    count++;
+            }else{
+                count--;
+            }
+           
+        }
+        return num;
+    }
+};
+
+  //方法1：排序后中间的元素一定是出现超过一半的数字
+        sort(nums.begin(),nums.end());
+        return nums[nums.size()/2];
+
+        //方法2：哈希表
+        unordered_map<int,int>mp;
+        for(auto it : nums){
+            mp[it]++;
+            if(mp[it]>nums.size()/2) return it;
+        }
+        return 0;
