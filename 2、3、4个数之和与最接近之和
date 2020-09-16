@@ -55,3 +55,42 @@ public:
         
     }
 };
+**********************************************************
+class Solution {
+public:
+    // 只需要返回三个数的和,根据15的双指针来改
+    int threeSumClosest(vector<int>& nums, int target) {
+        int n = nums.size();
+        if( n < 3 )
+            return NULL;
+        if( n == 3 )
+            return nums[0]+nums[1] + nums[2];
+        // 仍然需要重排
+        sort( nums.begin(), nums.end() );
+        int minMerge = INT_MAX;
+        int ans = 0, tmpSum = 0;
+        for( int i = 0; i < n; i++ ){
+            // if( i > 0 && nums[i] == nums[i-1] ) 
+            //     continue;
+            int l = i + 1, h = n - 1;
+            while( l < h ){
+                tmpSum = nums[i] + nums[l] + nums[h];
+                // 只需要加一重判断，然后记录最近的距离和该情况下的三数之和
+                // 如果当前距离小于目前最小距离，则需要更新
+                if( abs(tmpSum - target) < minMerge ){ 
+                        minMerge = abs( tmpSum - target );
+                        ans = tmpSum;
+                }
+                // 然后决定下一步怎么走
+                if( tmpSum < target ){ // 首先，tmpSum < target说明右侧可能有更好的结果，必须是像右侧走，l++
+                    l++;
+                }else if ( tmpSum > target){
+                   h--;
+                }else{ // 如果已经相等，那么间隔就是0
+                    return ans;
+                }
+            }
+        }
+        return ans;
+    }
+};
