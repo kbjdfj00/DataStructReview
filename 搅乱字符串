@@ -1,0 +1,40 @@
+//
+// Created by jt on 2020/8/30.
+//
+#include <string>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+public:
+    /**
+     *
+     * @param s1 string字符串
+     * @param s2 string字符串
+     * @return bool布尔型
+     */
+    bool isScramble(string s1, string s2) {
+        // write code here
+        return dfs(s1, s2);
+    }
+
+    bool dfs(string s1, string s2) {
+        if (s1.size() != s2.size()) return false;
+        if (s1 == s2) return true;
+        unordered_map<char, int> um;
+        for (int i = 0; i < s1.size(); ++i) {
+            ++um[s1[i]]; --um[s2[i]];
+        }
+        for (auto it = um.begin(); it != um.end(); ++it) {
+            if (it->second != 0) return false;
+        }
+
+        for (int i = 1; i < s1.size(); ++i) {
+            if (dfs(s1.substr(0, i), s2.substr(0, i)) &&
+                dfs(s1.substr(i), s2.substr(i))) return true;
+            if (dfs(s1.substr(0, i), s2.substr(s1.size()-i)) &&
+                    dfs(s1.substr(i), s2.substr(0, s1.size()-i))) return true;
+        }
+        return false;
+    }
+};
